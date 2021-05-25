@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 function Add({ values, setValues, actions, setActions, isEdit, setIsEdit, selected, setSelected }) {
   const handleChange = (type, event) => {
-    console.log(type, event)
     setValues({ ...values, [type]: event.target.value });
   };
 
@@ -89,6 +88,7 @@ const AddContent = styled.section`
     background-color: #247ed8;
     margin-right: 50px;
     padding: 20px;
+    border: 1px solid black;
 
     & > div {
       margin-bottom: 10px;
@@ -97,10 +97,17 @@ const AddContent = styled.section`
         position: absolute;
       }
 
+      input {
+        width: 260px;
+      }
+
+      select {
+        width: 100%;
+      }
+
       input,
       select {
         padding-left: 10px;
-        width: 260px;
         height: 25px;
         font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
       }

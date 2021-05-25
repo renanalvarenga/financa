@@ -51,6 +51,7 @@ const TotalContent = styled.div`
 
   table {
     width: 400px;
+    border: 1px solid black;
   }
 
   th {

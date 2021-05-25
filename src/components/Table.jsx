@@ -1,8 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 
 function Table(props) {
-  const { setValues, actions, setIsEdit, setSelected } = props;
+  const { setValues, actions, setActions, setIsEdit, setSelected } = props;
+  const [filters, setFilters] = useState({ type: "Todas", category: ""});
+
+  const handleChange = (type, event) => {
+    setFilters({ ...filters, [type]: event.target.value });
+
+    if (type === "type") {
+        const actualList = JSON.parse(localStorage.getItem("actions"));
+        if (event.target.value === "Todas") {
+            setActions(actualList);
+        } else {
+            const updatedList = actualList.filter(action => action.type === event.target.value);
+            setActions(updatedList);
+        }
+    }
+  };
 
   const onEdit = (action, index) => {
     setValues(action);
@@ -10,8 +25,26 @@ function Table(props) {
     setSelected(index);
   };
 
+  const onDelete = (index) => {
+    let updatedList = actions.splice(index, 0);
+    setActions(updatedList)
+    localStorage.setItem("actions", JSON.stringify(updatedList));
+  };
+
   return (
     <TableContent>
+        <div>
+            <select
+                name="type"
+                placeholder="Tipo"
+                onChange={e => handleChange("type", e)}
+                value={filters.type}
+                >
+                <option value="Todas">Todas</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Saída">Saída</option>
+            </select>
+        </div>
       <table>
         <thead>
           <tr>
@@ -32,7 +65,10 @@ function Table(props) {
                 <td>{action.category}</td>
                 <td>{action.value}</td>
                 <td>{action.date}</td>
-                <td onClick={() => onEdit(action, index)}>Editar</td>
+                <td>
+                    <span onClick={() => onEdit(action, index)}>Editar </span>
+                    <span onClick={() => onDelete(index)}>| Excluir</span>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -43,15 +79,20 @@ function Table(props) {
 export default Table;
 
 const TableContent = styled.div`
-  background-color: #ecebeb;
   color: black;
   font-size: 16px;
   text-align: center;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  & > div {
+    text-align: right;
+    margin-bottom: 20px;
+  }
 
   table {
     width: 850px;
+    border: 1px solid black;
   }
 
   th {
@@ -61,7 +102,7 @@ const TableContent = styled.div`
   }
 
   th:first-child {
-    width: 40%;
+    width: 30%;
   }
 
   td {
